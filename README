@@ -1,3 +1,12 @@
 == About ==
 
-Lists provide several implementations of classic linked-list data structures.
+Lists provide several implementations of classic linked-list data structures. Currently the following datatypes
+are provided:
+
+LinearList is a standard singly-linked list without any protections to guard against cyclic links between nodes;
+
+CycList is a generalised circular list where the terminating node links back to the first node.
+
+Both CycList and LinearList use a common ListHeader allowing them to be interchanged as necessary. This ListHeader
+has a chain.Node type associated with it which specifies the type of node used by a given instance of a list, and
+provides access caching to speed operations in frequently accessed portions of the list.
