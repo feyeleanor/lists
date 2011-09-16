@@ -245,13 +245,24 @@ func TestCycListFlatten(t *testing.T) {
 }
 
 func TestCycListCompact(t *testing.T) {
-	t.Fatal()
-	ConfirmCompact := func(c *CycList, r interface{}) {
-//		if x := c.Compact(); !r.Equal(x) {
-//			t.Fatalf("%v.Compact() should be %v but is %v", c, r, x)
-//		}
+	IdenticalSlices := func(l, r []interface{}) (ok bool) {
+		switch {
+		case len(l) != len(r):		return
+		case cap(l) != cap(r):		return
+		default:					for i, v := range l {
+										if v != r[i] {
+											return
+										}
+									}
+		}
+		return true
 	}
-
+	ConfirmCompact := func(c *CycList, r []interface{}) {
+		if x := c.Compact(); !IdenticalSlices(x, r) {
+			t.Fatalf("%v.Compact() should be %v but is %v", c, r, x)
+		}
+	}
+	
 	ConfirmCompact(Loop(), []interface{}{})
 	ConfirmCompact(Loop(1), []interface{}{ 1 })
 	ConfirmCompact(Loop(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), []interface{}{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 })

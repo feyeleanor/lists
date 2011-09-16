@@ -11,7 +11,7 @@ type Flattenable interface {
 }
 
 type Linear interface {
-	chain.Linear
+	Len() int
 }
 
 type Iterable interface {

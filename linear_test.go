@@ -330,11 +330,22 @@ func TestLinearListAbsorb(t *testing.T) {
 }
 
 func TestLinearListCompact(t *testing.T) {
-	t.Fatal()
+	IdenticalSlices := func(l, r []interface{}) (ok bool) {
+		switch {
+		case len(l) != len(r):		return
+		case cap(l) != cap(r):		return
+		default:					for i, v := range l {
+										if v != r[i] {
+											return
+										}
+									}
+		}
+		return true
+	}
 	ConfirmCompact := func(l *LinearList, r []interface{}) {
-//		if x := l.Compact(); !r.Equal(x) {
-//			t.Fatalf("%v.Compact() should be %v but is %v", l, r, x)
-//		}
+		if x := l.Compact(); !IdenticalSlices(x, r) {
+			t.Fatalf("%v.Compact() should be %v but is %v", l, r, x)
+		}
 	}
 
 	ConfirmCompact(List(), []interface{}{})
