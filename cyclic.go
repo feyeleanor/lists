@@ -1,7 +1,9 @@
 package lists
 
-import "github.com/feyeleanor/chain"
-import "github.com/feyeleanor/raw"
+import (
+	"github.com/feyeleanor/chain"
+	"github.com/feyeleanor/jittery"
+)
 
 /*
 	A CycList is a circular list structure.
@@ -43,9 +45,12 @@ func (c CycList) Cycle(f func(interface{})) {
 
 func (c CycList) index(i int) (r int) {
 	switch {
-	case c.length == 0:		r = 0
-	case i > 0:				r = i % c.length
-	case i < 0:				r = c.length + (i % c.length)
+	case c.length == 0:
+		r = 0
+	case i > 0:
+		r = i % c.length
+	case i < 0:
+		r = c.length + (i % c.length)
 	}
 	return
 }
@@ -68,15 +73,13 @@ func (c *CycList) Rotate(i int) {
 }
 
 func (c *CycList) Append(v interface{}) {
-	c.ListHeader.Append(v)
-	if c.end == c.start {
+	if c.ListHeader.Append(v); c.end == c.start {
 		c.end.Link(chain.NEXT_NODE, c.start)
 	}
 }
 
 func (c *CycList) Concatenate(i interface{}) {
-	c.ListHeader.Concatenate(i)
-	if c.end != nil {
+	if c.ListHeader.Concatenate(i); c.end != nil {
 		c.end.Link(chain.NEXT_NODE, c.start)
 	}
 }
@@ -85,11 +88,14 @@ func (c *CycList) Concatenate(i interface{}) {
 //	Two CycLists are identical if they both have the same number of nodes, and the head of each node is the same
 func (c CycList) Equal(o interface{}) (r bool) {
 	switch o := o.(type) {
-	case *CycList:		r = o != nil && c.ListHeader.Equal(o.ListHeader)
-	case CycList:		r = c.ListHeader.Equal(o.ListHeader)
-	default:			raw.Catch(func() {
-							r = c.start.(Equatable).Equal(o)
-						})
+	case *CycList:
+		r = o != nil && c.ListHeader.Equal(o.ListHeader)
+	case CycList:
+		r = c.ListHeader.Equal(o.ListHeader)
+	default:
+		jittery.Catch(func() {
+			r = c.start.(Equatable).Equal(o)
+		})
 	}
 	return 
 }
